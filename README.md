@@ -1,1 +1,5 @@
-Submission instructions forthcoming.
+### Submission Instructions
+
+All solution writeups (math, plots, explanations) in this class must be submitted electronically as a .pdf file. Preferably this writeup will be produced using LaTeX or Word, but if your submission will be handwritten and scanned, please use a flatbed scanner or a scanning app on your phone (raw photos will not be accepted).
+
+Name your writeup `<your-sunet-id>.pdf` (e.g., `pavone.pdf`) and place it in the base level of this directory (i.e., at `.../AA274_HW1/pavone.pdf`). To download the submission script, open this directory in your terminal and run `git pull` at the command line. Then run `./submit_hw1_code_and_writeup.sh` to submit this portion of the assignment. Note that you must also run a submission script for the ROS portion of this assignment; see details here: https://github.com/StanfordASL/asl_turtlebot.
