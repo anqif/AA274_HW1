@@ -1,0 +1,16 @@
+*.aux
+
+*.log
+
+*.bbl
+
+*.blg
+
+*.out
+aa274_hw1.pdf
+
+*.toc
+
+*.gz
+
+*.DS_*
