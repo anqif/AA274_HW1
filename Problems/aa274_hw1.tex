@@ -5,10 +5,8 @@
 \setlength{\captionmargin}{20pt}
 \setlist[enumerate]{label=(\roman*)}
 
-\title{\Large{
-		A Convex Optimization Approach to 
-		Radiation Treatment Planning with Dose Constraints}}
-\author{Anqi Fu, AA274, Winter 2017-2018}
+\title{\Large{AA274 (Winter 2017-18): Problem Set 1}}
+\author{Anqi Fu}
 
 \begin{document}
 \maketitle
@@ -61,7 +59,7 @@
 	\end{split}
 	\end{align}
 	with the additional constraint (for the control inequality constraints)
-	\begin{align}\label{eq:1_1_ineq}
+	\begin{align}\label{eqn:1_1_ineq}
 	\begin{split}
 		&V^*(t)^2 + \omega^*(t)^2 + p_1^*(t)V^*(t)\cos(\theta^*(t)) + p_2^*(t)V^*(t)\sin(\theta^*(t)) + p_3^*(t)\omega^*(t) \\
 	\leq \; &V(t)^2 + \omega(t)^2 + p_1^*(t)V(t)\cos(\theta^*(t)) + p_2^*(t)V(t)\sin(\theta^*(t)) + p_3^*(t)\omega(t)
@@ -74,7 +72,7 @@
 		&\lambda + V^*(t_f)^2 + \omega^*(t_f)^2 + p_1^*(t_f)V^*(t_f)\cos(\theta^*(t_f)) + p_2^*(t_f)V^*(t_f)\sin(\theta^*(t_f)) + p_3^*(t_f)\omega^*(t_f) \\
 		= \; &\lambda + V^*(t_f)^2 - p_2^*(t_f)V^*(t_f) + \omega^*(t_f)^2 + p_3^*(t_f)\omega^*(t_f) = 0.
 	\end{align*}
-	We make two modifications in order to solve this problem. First, we ignore the control inequality constraints and manually vary $\lambda$. This means that (\ref{eq:1_1_ineq}) is replaced with
+	We make two modifications in order to solve this problem. First, we ignore the control inequality constraints and manually vary $\lambda$. This means that (\ref{eqn:1_1_ineq}) is replaced with
 	\begin{align*}
 		\left(\begin{array}{c}
 		0 \\
@@ -94,7 +92,7 @@
 		\end{array}\right)
 	\end{align*}
 	Second, we use a change of variables to reformulate the BVP: we rescale the time to $\tau = \frac{t}{t_f} \in [0,1]$, so the derivatives become $\frac{d}{d\tau} := t_f\frac{d}{dt}$, then introduce a dummy state variable $r$ that corresponds to $t_f$ with dynamic $\dot r = 0$ and replace all instances of $t_f$ with $r$. Let $\mathbf{z} = (x, y, \theta, p_1, p_2, p_3, r)$ denote the augmented state vector, then $\frac{d\mathbf{z}}{dt} = \frac{1}{t_f}\frac{d\mathbf{z}}{d\tau} = \frac{1}{r}\frac{d\mathbf{z}}{d\tau}$ and our optimality conditions become
-	\begin{equation}\label{eq:1_1_bvp_opt}
+	\begin{equation}\label{eqn:1_1_bvp_opt}
 		\frac{d\mathbf{z}}{d\tau} =
 		z_7\left(\begin{array}{c}
 		V\cos(z_3) \\
@@ -107,7 +105,7 @@
 		\end{array}\right)
 	\end{equation}
 	with boundary conditions
-	\begin{align}\label{eq:1_1_bvp_bc}
+	\begin{align}\label{eqn:1_1_bvp_bc}
 	\begin{split}
 		&z_1(0) = 0, z_2(0) = 0, z_3(0) = -\pi/2 \\
 		&z_1(1) = 5, z_2(1) = 5, z_3(1) = -\pi/2 \\
@@ -151,7 +149,7 @@
 	\begin{figure}[H]
 		\centering
 		\title{\bf History of $V$ and $\omega$}
-		\includegraphics[width=\textwidth]{../Figures/hw1_1_v_control.png}
+		\includegraphics[width=\textwidth]{../Figures/hw1_1_v_ctrl.png}
 	\end{figure}
 \end{enumerate}
 
@@ -363,7 +361,7 @@
 	\begin{figure}[H]
 		\centering
 		\title{\bf History of $V$ and $\omega$}
-		\includegraphics[width=\textwidth]{../Figures/hw1_2_v_control.png}
+		\includegraphics[width=\textwidth]{../Figures/hw1_2_v_ctrl.png}
 	\end{figure}
 \end{enumerate}
 
@@ -436,7 +434,7 @@
 \section{Closed-loop Control II}
 \begin{enumerate}
 	\item In Problem 2, part (ii), we showed that for a given state $\mathbf{x} = (x,y,\theta)$,
-	\[
+	\begin{equation}\label{eqn:4_1_system}
 		\left(\begin{array}{c}
 		a \\
 		\omega
@@ -449,11 +447,29 @@
 		u_1\cos(\theta) + u_2\sin(\theta) \\
 		\frac{1}{V}(-u_1\sin(\theta) + u_2\cos(\theta))
 		\end{array}\right)
-	\]
+	\end{equation}
 	where the virtual controls are $(u_1,u_2) = (\ddot x, \ddot y)$.
+	\item See submitted code. We assume the control law is implemented at a high enough frequency that the state variables $\mathbf{x} = (x,y,\theta)$ can be treated as constant. Furthermore, at each step $t$, we consider the current velocity to be that commanded at $t-1$, i.e.,
+	\[
+		\dot x_t = V_{t-1}\cos(\theta), \quad \dot y_t = V_{t-1}\sin(\theta),
+	\]
+	Using this, we can calculate $(u_1,u_2)$ and plug into (\ref{eqn:4_1_system}) to get the current acceleration, $\dot V_t$. We then apply the Euler method to update
+	\[
+		V_t = V_{t-1} + \delta\dot V_t \quad \mbox{where $\delta$ is the timestep}.
+	\]
+	If $V_t \approx 0$, we reset it to the nominal (desired) velocity $V_d = \sqrt{\dot x_d^2 + \dot y_d^2}$ according to the robot kinematic model. Finally, we calculate $\omega$.
 	\item See submitted code.
-	\item See submitted code.
-	\item See submitted code.
+	\item See submitted code. For this simulation, we set $(k_{px}, k_{py}, k_{dx}, k_{dy}) = (1,1,0.5,0.5)$ and reset to the nominal velocity whenever $|V_t| \leq \epsilon = 10^{-5}$.
+	\begin{figure}[H]
+		\centering
+		\title{\bf Trajectory $(x(t), y(t))$}
+		\includegraphics[width=\textwidth]{../Figures/hw1_4_iv_traj.png}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\title{\bf History of $V$ and $\omega$}
+		\includegraphics[width=\textwidth]{../Figures/hw1_4_iv_ctrl.png}
+	\end{figure}
 \end{enumerate}
 
 \section{Robot Operating System}

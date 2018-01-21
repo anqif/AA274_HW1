@@ -14,29 +14,38 @@ def ctrl_traj(x,y,th,ctrl_prev,x_d,y_d,xd_d,yd_d,xdd_d,ydd_d,x_g,y_g,th_g):
     dt = 0.005
 
     # Gains
-    # kpx = #...TODO...#
-    # kpy =
-    # kdx =
-    # kdy =
+    kpx = 1
+    kpy = 1
+    kdx = 0.5
+    kdy = 0.5
+
+    # Cutoffs
+    d_eps = 0.5
+    V_eps = 1e-5
 
     # Define control inputs (V,om) - without saturation constraints
     # Switch to pose controller once "close" enough, i.e., when
     # the robot is within 0.5m of the goal xy position.
-    if np.sqrt((x_g-x)**2 + (y_g-y)**2) <= 0.5:
+    if np.sqrt((x_g-x)**2 + (y_g-y)**2) <= d_eps:
         return ctrl_pose(x,y,th,x_g,y_g,th_g)
 
     # Assume current velocity is that commanded in previous timestep
     V_prev = ctrl_prev[0]
-    om_prev = ctrl_prev[1]
-    x_dot = V_prev*np.cos(th-om_prev*dt)   # d(th)/dt = (th-th_prev)/dt = om
-    y_dot = V_prev*np.sin(th-om_prev*dt)
+    x_dot = V_prev*np.cos(th)
+    y_dot = V_prev*np.sin(th)
     
     # Virtual control law
     u1 = xdd_d + kpx*(x_d-x) + kdx*(xd_d-x_dot)
     u2 = ydd_d + kpy*(y_d-y) + kdy*(yd_d-y_dot)
 
     # Recover actual control inputs
-    # TODO: V = Integrate to get back V
+    V_dot = u1*np.cos(th) + u2*np.sin(th)
+    V = V_prev + dt*V_dot # Euler step
+
+    # Reset to desired velocity if V = 0
+    if np.abs(V) <= V_eps:
+        V = np.sqrt(xd_d**2 + yd_d**2)
+        print "Resetting to nominal velocity: ", V
     om = (-u1*np.sin(th) + u2*np.cos(th))/V
 
     # Apply saturation limits
