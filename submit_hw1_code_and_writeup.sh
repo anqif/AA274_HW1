@@ -6,8 +6,8 @@ catkin_ws=${catkin_ws:-$HOME/catkin_ws/}
 
 rm -f "${sunetid}_hw1.zip"
 echo "Creating ${sunetid}_hw1.zip"
-sudo zip -q "${sunetid}_hw1.zip" "submit_hw1_code_and_writeup.sh"
-sudo zip -qd "${sunetid}_hw1.zip" "submit_hw1_code_and_writeup.sh" # making an empty zip file
+zip -q "${sunetid}_hw1.zip" "submit_hw1_code_and_writeup.sh"
+zip -qd "${sunetid}_hw1.zip" "submit_hw1_code_and_writeup.sh" # making an empty zip file
 
 for fname in "P1_optimal_control.py" \
              "P2_differential_flatness.py" \
@@ -20,7 +20,7 @@ for fname in "P1_optimal_control.py" \
              "${catkin_ws}/src/asl_turtlebot/scripts/controller.py"
 do
     if [ -f $fname ]; then
-        sudo zip "${sunetid}_hw1.zip" $fname
+        zip "${sunetid}_hw1.zip" $fname
     else
         read -p "$fname not found. Skip it? [yn]: " yn
         case $yn in
@@ -31,7 +31,7 @@ do
 done
 
 if [ -f "$sunetid.pdf" ]; then
-    sudo zip "${sunetid}_hw1.zip" "$sunetid.pdf"
+    zip "${sunetid}_hw1.zip" "$sunetid.pdf"
 else
     echo "Cannot find ./$sunetid.pdf; you must submit your HW1 writeup as $sunetid.pdf in this directory."
     exit
@@ -42,7 +42,7 @@ cd ${catkin_ws}
 
 if [ -f "random_strings.bag" ]; then
     echo "Found random_strings bag ${catkin_ws}/random_strings.bag"
-    sudo zip "${hw1_dir}/${sunetid}_hw1.zip" "random_strings.bag"
+    zip "${hw1_dir}/${sunetid}_hw1.zip" "random_strings.bag"
 else
     found=false
     for bag in $(find -name \*.bag)
@@ -51,7 +51,7 @@ else
         if [[ $topics == *"random_strings"* ]]; then
             echo "Found random_strings bag $bag; copying to ${catkin_ws}/random_strings.bag"
             cp $bag "random_strings.bag"
-            sudo zip "${hw1_dir}/${sunetid}_hw1.zip" "random_strings.bag"
+            zip "${hw1_dir}/${sunetid}_hw1.zip" "random_strings.bag"
             found=true
             break
         fi
@@ -67,7 +67,7 @@ fi
 
 if [ -f "turtlebot.bag" ]; then
     echo "Found turtlebot bag ${catkin_ws}/turtlebot.bag"
-    sudo zip "${hw1_dir}/${sunetid}_hw1.zip" "turtlebot.bag"
+    zip "${hw1_dir}/${sunetid}_hw1.zip" "turtlebot.bag"
 else
     found=false
     for bag in $(find -name \*.bag)
@@ -76,7 +76,7 @@ else
         if [[ $topics == *"model_states"* ]] && [[ $topics == *"cmd_vel"* ]]; then
             echo "Found turtlebot bag $bag; copying to ${catkin_ws}/turtlebot.bag"
             cp $bag "turtlebot.bag"
-            sudo zip "${hw1_dir}/${sunetid}_hw1.zip" "turtlebot.bag"
+            zip "${hw1_dir}/${sunetid}_hw1.zip" "turtlebot.bag"
             found=true
             break
         fi
