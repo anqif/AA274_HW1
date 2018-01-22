@@ -20,8 +20,8 @@ def ctrl_traj(x,y,th,ctrl_prev,x_d,y_d,xd_d,yd_d,xdd_d,ydd_d,x_g,y_g,th_g):
     kdy = 0.5
 
     # Cutoffs
-    d_eps = 0.5
-    V_eps = 1e-5
+    d_eps = 0.5   # Switch to pose controller
+    V_eps = 1e-5  # Reset to nominal velocity
 
     # Define control inputs (V,om) - without saturation constraints
     # Switch to pose controller once "close" enough, i.e., when

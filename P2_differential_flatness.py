@@ -22,10 +22,10 @@ V_f = V_max
 th_f = -np.pi/2
 
 # Solve Linear equations:
-xd_0 = 0
-yd_0 = -1
-xd_f = 0
-yd_f = -1
+xd_0 = V_0*np.cos(th_0)
+yd_0 = V_0*np.sin(th_0)
+xd_f = V_f*np.cos(th_f)
+yd_f = V_f*np.sin(th_f)
 
 A = np.array([[1,   0,      0,         0], 
 			  [1, t_f, t_f**2,    t_f**3],

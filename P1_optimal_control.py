@@ -39,7 +39,7 @@ def q1_bc_fun(za, zb):
 
     # Code boundary condition residuals
     Vom_b = z_to_ctrl(zb)
-    BC_tf = lambda_test + Vom_b[0]**2 - zb[4]*Vom_b[0] + Vom_b[1]**2 + zb[5]*Vom_b[1]
+    BC_tf = lambda_test + Vom_b[0]**2 + Vom_b[1]**2 - zb[4]*Vom_b[0] + zb[5]*Vom_b[1]
     BC_left = za[0:3] - x0
     BC_right = np.append(zb[0:3] - xf, BC_tf)
 
@@ -81,6 +81,7 @@ om = Vom[:,1]
 V = np.array([V]).T # Convert to 1D column matrices
 om = np.array([om]).T
 
+# Throw error if lambda causes control constraints to be violated
 if any(np.abs(V) > 0.5):
     raise ValueError("Control constraint |V(t)| <= 0.5 violated")
 

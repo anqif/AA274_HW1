@@ -65,15 +65,16 @@
 	\leq \; &V(t)^2 + \omega(t)^2 + p_1^*(t)V(t)\cos(\theta^*(t)) + p_2^*(t)V(t)\sin(\theta^*(t)) + p_3^*(t)\omega(t)
 	\end{split}
 	\end{align}
-	for all $(V(t), \omega(t)) \in \mathbb{R}^2$. Since $t_f$ is free and $\mathbf{x}(t_f)$ fixed, the boundary conditions amount to
+	for all $(V(t), \omega(t)) \in \mathbb{R}^2$. Since $t_f$ is free and $\mathbf{x}(t_f)$ is fixed, the boundary conditions amount to
 	\begin{align*}
 		&x^*(0) = 0, \quad y^*(0) = 0, \quad \theta^*(0) = -\pi/2, \\
 		&x^*(t_f) = 5, \quad y^*(t_f) = 5, \quad \theta^*(t_f) = -\pi/2, \\
 		&\lambda + V^*(t_f)^2 + \omega^*(t_f)^2 + p_1^*(t_f)V^*(t_f)\cos(\theta^*(t_f)) + p_2^*(t_f)V^*(t_f)\sin(\theta^*(t_f)) + p_3^*(t_f)\omega^*(t_f) \\
-		= \; &\lambda + V^*(t_f)^2 - p_2^*(t_f)V^*(t_f) + \omega^*(t_f)^2 + p_3^*(t_f)\omega^*(t_f) = 0.
+		= \; &\lambda + V^*(t_f)^2 + \omega^*(t_f)^2 - p_2^*(t_f)V^*(t_f) + p_3^*(t_f)\omega^*(t_f) = 0.
 	\end{align*}
 	We make two modifications in order to solve this problem. First, we ignore the control inequality constraints and manually vary $\lambda$. This means that (\ref{eqn:1_1_ineq}) is replaced with
-	\begin{align*}
+	\begin{align}\label{eqn:1_1_Vom}
+	\begin{split}
 		\left(\begin{array}{c}
 		0 \\
 		0
@@ -90,8 +91,9 @@
 		p_1^*(t)\cos(\theta^*(t)) + p_2^*(t)\sin(\theta^*(t)) \\
 		p_3^*(t)
 		\end{array}\right)
-	\end{align*}
-	Second, we use a change of variables to reformulate the BVP: we rescale the time to $\tau = \frac{t}{t_f} \in [0,1]$, so the derivatives become $\frac{d}{d\tau} := t_f\frac{d}{dt}$, then introduce a dummy state variable $r$ that corresponds to $t_f$ with dynamic $\dot r = 0$ and replace all instances of $t_f$ with $r$. Let $\mathbf{z} = (x, y, \theta, p_1, p_2, p_3, r)$ denote the augmented state vector, then $\frac{d\mathbf{z}}{dt} = \frac{1}{t_f}\frac{d\mathbf{z}}{d\tau} = \frac{1}{r}\frac{d\mathbf{z}}{d\tau}$ and our optimality conditions become
+	\end{split}
+	\end{align}
+	Second, we use a change of variables to reformulate the BVP: we rescale the time to $\tau = \frac{t}{t_f} \in [0,1]$ so derivatives become $\frac{d}{d\tau} := t_f\frac{d}{dt}$, then introduce a dummy state variable $r$ that corresponds to $t_f$ with dynamic $\dot r = 0$ and replace all instances of $t_f$ with $r$. Let $\mathbf{z} = (x, y, \theta, p_1, p_2, p_3, r)$ denote the augmented state vector, then $\frac{d\mathbf{z}}{dt} = \frac{1}{t_f}\frac{d\mathbf{z}}{d\tau} = \frac{1}{r}\frac{d\mathbf{z}}{d\tau}$ and (\ref{eqn:1_1_cond}) becomes
 	\begin{equation}\label{eqn:1_1_bvp_opt}
 		\frac{d\mathbf{z}}{d\tau} =
 		z_7\left(\begin{array}{c}
@@ -107,13 +109,13 @@
 	with boundary conditions
 	\begin{align}\label{eqn:1_1_bvp_bc}
 	\begin{split}
-		&z_1(0) = 0, z_2(0) = 0, z_3(0) = -\pi/2 \\
-		&z_1(1) = 5, z_2(1) = 5, z_3(1) = -\pi/2 \\
-		&\lambda + V(1)^2 - z_5(1)V(1) + \omega(1)^2 + z_6(1)\omega(1) = 0
+		&z_1(0) = 0, \quad z_2(0) = 0, \quad z_3(0) = -\pi/2 \\
+		&z_1(1) = 5, \quad z_2(1) = 5, \quad z_3(1) = -\pi/2 \\
+		&\lambda + V(1)^2 + \omega(1)^2 - z_5(1)V(1) + z_6(1)\omega(1) = 0
 	\end{split}
 	\end{align}
-	where we have defined
-	\begin{equation}\label{eqn:1_1_Vom}
+	where we have used (\ref{eqn:1_1_Vom}) to define
+	\begin{equation}\label{eqn:1_1_bvp_Vom}
 		\left(\begin{array}{c}
 		V \\
 		\omega
@@ -124,11 +126,11 @@
 		\end{array}\right)
 	\end{equation}
 	\item See submitted code.
-	\item By choosing the largest feasible $\lambda$, we are solving the control problem with the smallest $t_f$ feasible, i.e., our optimal controls drive the unicycle to its final waypoint in the shortest possible time. This can be seen by separating the objective into
+	\item By choosing the largest feasible $\lambda$, we are solving the control problem with the smallest feasible $t_f$, i.e., our optimal control functions drive the unicycle to its final waypoint in the shortest possible time. This can be seen by separating the objective into
 	\[
 		J = \int_0^{t_f} [\lambda + V(t)^2 + \omega(t)^2]dt = \lambda t_f + \int_0^{t_f} [V(t)^2 + \omega(t)^2]dt.
 	\]
-	Here $\lambda \geq 0$ acts like a regularization weight: a larger value of $\lambda$ upweights $t_f$ relative to the rest of the objective, which means (since we are minimizing $J$) that we place more importance on reducing $t_f$ in the optimization. Selecting the largest feasible $\lambda$ makes sense, since in general, we prefer to travel between the initial and final waypoints as quickly as possible.
+	Here $\lambda \geq 0$ acts like a regularization weight: a larger value of $\lambda$ upweights $t_f$ relative to the rest of the objective, which means (since we are minimizing $J$) that we place more importance on reducing $t_f$ in the optimization. Selecting the largest feasible $\lambda$ makes sense because in general, we prefer to travel between the initial and final waypoints as quickly as possible.
 	\item See submitted code. With $\lambda = 0.238$ and solution guess $\mathbf{z}_0 = (0, 0, -\pi/2, 1, 1, 0, 10)$, we get $V < 0$ and the robot backs up from $(0,0)$ to $(5,5)$. Its trajectory and control histories are shown below.
 	\begin{figure}[H]
 		\centering
@@ -169,9 +171,9 @@
 		&x(t_f) = 5 = x_1 + x_2t_f + x_3t_f^2 + x_4t_f^3 \\
 		&y(t_f) = 5 = y_1 + y_2t_f + y_3t_f^2 + y_4t_f^3 \\
 		&\dot x(0) = V(0)\cos(\theta(0)) = 0.5\cos(-\pi/2) = 0 = x_2 \\
-		&\dot y(0) = V(0)\sin(\theta(0)) = 0.5\sin(-\pi/2) = -1 = y_2 \\
+		&\dot y(0) = V(0)\sin(\theta(0)) = 0.5\sin(-\pi/2) = -0.5 = y_2 \\
 		&\dot x(t_f) = V(t_f)\cos(\theta(t_f)) = 0.5\cos(-\pi/2) = 0 = x_2 + 2x_3t_f + 3x_4t_f^2 \\
-		&\dot y(t_f) = V(t_f)\sin(\theta(t_f)) = 0.5\sin(-\pi/2) = -1 = y_2 + 2y_3t_f + 3y_4t_f^2
+		&\dot y(t_f) = V(t_f)\sin(\theta(t_f)) = 0.5\sin(-\pi/2) = -0.5 = y_2 + 2y_3t_f + 3y_4t_f^2
 	\end{align*}
 	or more succinctly in matrix form,
 	\begin{align*}
@@ -238,8 +240,8 @@
 		\left(\begin{array}{c}
 		0 \\
 		5 \\
-		-1 \\
-		-1
+		-0.5 \\
+		-0.5
 		\end{array}\right) =
 		\left(\begin{array}{c}
 		y(0) \\
@@ -249,7 +251,7 @@
 		\end{array}\right)
 	\end{align*}
 	We cannot set $V(t_f) = 0$ because then $J$ would be singular at time $t_f$, and we could not recover the flat outputs from the virtual control inputs.
-	\item After solving for $x_i,y_i$ for $i = 1,\ldots,n$, we can recover
+	\item See submitted code. After solving for $x_i,y_i$ for $i = 1,\ldots,n$, we can recover
 	\[
 		\left(\begin{array}{c}
 		x(t) \\
@@ -316,7 +318,7 @@
 		V(t) &= \sqrt{(x_2 + 2x_3t + 3x_4t^2)^2 + (y_2 + 2y_3t + 3y_4t^2)^2} \\
 		\omega(t) &= \frac{1}{V(t)}\left(-(2x_3 + 6x_4t)\sin(\theta(t)) + (2y_3 + 6y_4t)\cos(\theta(t))\right)
 	\end{align*}
-	\item Given $\dot s(t) = V(t)$ with $s(0) = 0$, we can integrate to get the path parameter
+	\item See submitted code. Given $\dot s(t) = V(t)$ with $s(0) = 0$, we can integrate to get the path parameter
 	\[
 		s(t) = \int_0^t V(t')dt' - V(0)
 	\]
@@ -367,7 +369,7 @@
 
 \section{Closed-loop Control I}
 \begin{enumerate}
-	\item We are given the control law
+	\item See submitted code. We are given the control law
 	\begin{align*}
 		V &= k_1\rho\cos(\alpha) \\
 		\omega &= k_2\alpha + k_1\frac{\sin(\alpha)\cos(\alpha)}{\alpha}(\alpha + k_3\delta)
@@ -378,7 +380,7 @@
 		\dot \alpha(t) &= V(t)\frac{\sin(\alpha(t))}{\rho(t)} - \omega(t) \\
 		\dot \delta(t) &= V(t)\frac{\sin(\alpha(t))}{\rho(t)}
 	\end{align*}
-	where $k_1,k_2,k_3 > 0$ are constants. From Homework 1, Figure 2, we readily see that given a starting position $(x,y,\theta)$ and final position $(x_g,y_g,\theta_g)$, the incremental change in polar coordinates is
+	where $k_1,k_2,k_3 > 0$ are constants. From Homework 1, Figure 2, we readily see that for a starting position $(x,y,\theta)$ and final position $(x_g,y_g,\theta_g)$, the incremental change in polar coordinates is
 	\begin{align*}
 		\rho &= \sqrt{(x_g - x)^2 + (y_g - y)^2} \\
 		\tan(\alpha + \theta) = \frac{y_g - y}{x_g - x} \Rightarrow \alpha &= \arctan{\left(\frac{y_g - y}{x_g - x}\right)} - \theta \\
@@ -433,7 +435,12 @@
 
 \section{Closed-loop Control II}
 \begin{enumerate}
-	\item In Problem 2, part (ii), we showed that for a given state $\mathbf{x} = (x,y,\theta)$,
+	\item We wish to implement the virtual control law
+	\begin{align*}
+		u_1 &= \ddot x_d + k_{px}(x_d - x) + k_{dx}(\dot x_d - \dot x) \\
+		u_2 &= \ddot y_d + k_{py}(y_d - y) + k_{dy}(\dot y_d - \dot y)
+	\end{align*}
+	with control gains $k_{px}, k_{py}, k_{dx}, k_{dy} > 0$ and desired (differential flatness) trajectory $(x_d,y_d)$. In Problem 2, part (ii), we showed that for a given state $\mathbf{x} = (x,y,\theta)$,
 	\begin{equation}\label{eqn:4_1_system}
 		\left(\begin{array}{c}
 		a \\
@@ -449,17 +456,17 @@
 		\end{array}\right)
 	\end{equation}
 	where the virtual controls are $(u_1,u_2) = (\ddot x, \ddot y)$.
-	\item See submitted code. We assume the control law is implemented at a high enough frequency that the state variables $\mathbf{x} = (x,y,\theta)$ can be treated as constant. Furthermore, at each step $t$, we consider the current velocity to be that commanded at $t-1$, i.e.,
+	\item See submitted code. We assume the virtual control law is implemented at a high enough frequency that the state can be treated as constant. Furthermore, at each step $t$, we consider the current velocity to be that commanded at $t-1$, i.e.,
 	\[
-		\dot x_t = V_{t-1}\cos(\theta), \quad \dot y_t = V_{t-1}\sin(\theta),
+		\dot x_t = V_{t-1}\cos(\theta), \quad \dot y_t = V_{t-1}\sin(\theta).
 	\]
-	Using this, we can calculate $(u_1,u_2)$ and plug into (\ref{eqn:4_1_system}) to get the current acceleration, $\dot V_t$. We then apply the Euler method to update
+	Using this, we can calculate $(u_1,u_2)$ and plug into (\ref{eqn:4_1_system}) to get the current acceleration, $a_t = \dot V_t$. We then apply the Euler method to update
 	\[
-		V_t = V_{t-1} + \delta\dot V_t \quad \mbox{where $\delta$ is the timestep}.
+		V_t = V_{t-1} + (dt)\dot V_t \quad \mbox{where $dt$ is the timestep}.
 	\]
-	If $V_t \approx 0$, we reset it to the nominal (desired) velocity $V_d = \sqrt{\dot x_d^2 + \dot y_d^2}$ according to the robot kinematic model. Finally, we calculate $\omega$.
+	If $V_t \approx 0$, we reset it to the nominal (desired) velocity $V_d = \sqrt{\dot x_d^2 + \dot y_d^2}$ according to the robot kinematic model. Finally, we calculate $\omega$ from (\ref{eqn:4_1_system}).
 	\item See submitted code.
-	\item See submitted code. For this simulation, we set $(k_{px}, k_{py}, k_{dx}, k_{dy}) = (1,1,0.5,0.5)$ and reset to the nominal velocity whenever $|V_t| \leq \epsilon = 10^{-5}$.
+	\item See submitted code. For this simulation, we set $(k_{px}, k_{py}, k_{dx}, k_{dy}) = (1,1,0.5,0.5)$ and reset to the nominal velocity whenever $|V_t| \leq \epsilon = 10^{-5}$. The following plots were made with initial conditions $(x_0,y_0,\theta_0) = (0,0,-\pi/2)$.
 	\begin{figure}[H]
 		\centering
 		\title{\bf Trajectory $(x(t), y(t))$}
